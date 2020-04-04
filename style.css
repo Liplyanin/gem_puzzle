@@ -4,19 +4,20 @@ body{
     align-items: center;
     justify-content: center;
     margin: 0 auto;
-    height: 100vh;
 }
 .playground{
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(4, 1fr);
     background-color: rgb(241, 241, 177);
+    width: 35vw;
+    height: 35vw;
+    max-width: 1024px;
+    max-height: 1024px;
+    margin-top: 5vh;
 }
 .playground_item{
-    max-width: 100px;
-    max-height: 100px;
-    width: 10vw;
-    height: 10vw;
+    
     display: flex;
     justify-content: center;
     align-items: center;
@@ -24,10 +25,25 @@ body{
     font-size: 1em;
     cursor: pointer;
 }
-@media (min-width: 760px){
+@media (max-width: 820px){
+    .playground{
+        width: 50vw;
+        height: 50vw;
+    }
+}
+@media (max-width: 565px){
     .playground_item{
-        font-size: 3em;
+        font-size: 0.7em;
 
+    }
+    .playground{
+        width: 75vw;
+        height: 75vw;
+    }
+}
+@media (max-width: 400px){
+    .playground_item{
+        font-size: 0.65em;
     }
 }
 .step{

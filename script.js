@@ -1,20 +1,52 @@
 document.querySelector('body').insertAdjacentHTML('afterbegin',`
+<div class="buttons">
+        <button id="mix" onclick="getField(currentSize)">Mix and start</button>
+        <button id="results">Results</button>
+    </div>
+    <div class="game-status">
+        <div class="steps">Steps: 0</div>
+        <div class="time"> Time: 00 : 00 </div>
+    </div>`)
+document.querySelector('body').insertAdjacentHTML('afterbegin',`
 <div class="sizes">
 Other sizes:
-<a id="3*3">3x3</a>
+<a>3x3</a>
 <a id="4*4">4x4</a>
-<a id="5*5">5x5</a>
-<a id="6*6">6x6</a>
-<a id="7*7">7x7</a>
-<a id="8*8">8x8</a>
-</div>`);
+<a>5x5</a>
+<a>6x6</a>
+<a>7x7</a>
+<a>8x8</a>
+</div> `);
 document.querySelector('body').insertAdjacentHTML('afterbegin',`<div class ='playground'></div>`);
 let playground = document.querySelector('.playground');
 
+let currentSize = 16;
+let steps = 0;
+let minutes = 0;
+let seconds = 0;
+let timer; 
+const clock = () => {
+    if(seconds==60){
+        minutes++;
+        seconds = 0;
+    }
+    let resMinute=((minutes < 10) ? "0" : "") + minutes;
+    let resSeconds =((seconds < 10) ? "0" : "") + seconds;
+    let clock = 'Time: '+ resMinute + " : " + resSeconds;
+    
+    document.querySelector('.time').innerHTML = clock;
+    seconds++;    
+    timer = setTimeout("clock()",1000); 
+      
+
+}
 
 const getField = (size) =>{    
     playground.innerHTML = '';
-    for(let i=0; i<size; i++){ 
+    clearTimeout(timer);
+    minutes = 0;
+    seconds = 0;
+     for(let i=0; i<size; i++){ 
         let div = document.createElement('div');
         if(i==0){
             div.innerHTML='';
@@ -41,7 +73,21 @@ const getField = (size) =>{
 
     arr.forEach(el=>str+=el);
     playground.innerHTML = str;
+    steps = 0;
+    document.querySelector('.steps').innerHTML = 'Steps: ' + steps;
+    clock()
+};
 
+const changeField = () =>{
+ 
+    let str = event.target.innerHTML;
+    currentSize = +(str[0])*(+str[2]);
+    playground.style = `   
+    display: grid;
+    grid-template-columns: repeat(` + str[0] + `, 1fr);
+    grid-template-rows: repeat(` + str[0] + `, 1fr);
+    background-color: rgb(241, 241, 177);`
+    getField(currentSize);
 };
 const changePos = (el) =>{
     let arr = [];
@@ -55,17 +101,8 @@ const changePos = (el) =>{
 
     arr.forEach(el=>str+=el);
     playground.innerHTML = str;
-};
-const changeField = () =>{
- 
-    let str = event.target.innerHTML;
-    let size = +(str[0])*(+str[2]);
-    playground.style = `   
-    display: grid;
-    grid-template-columns: repeat(` + str[0] + `, 1fr);
-    grid-template-rows: repeat(` + str[0] + `, 1fr);
-    background-color: rgb(241, 241, 177);`
-    getField(size);
+    steps+=1;
+    document.querySelector('.steps').innerHTML = 'Steps: ' + steps;
 };
 
 let sizes = document.querySelector('.sizes');
@@ -76,8 +113,6 @@ sizes.addEventListener('click',(event)=>{
         changeField();
     }
 });
-
-
 
 playground.addEventListener('click', (event)=>{
     let emptySquare = document.querySelector('.step');
@@ -102,5 +137,13 @@ playground.addEventListener('click', (event)=>{
 
 })
 
-let str = '3*3';
-console.log(str)
+
+
+
+
+
+
+window.onload = () =>{
+    getField(currentSize);
+    document.getElementById('4*4').classList.add('active')
+}
