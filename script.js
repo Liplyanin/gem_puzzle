@@ -1,19 +1,20 @@
 document.querySelector('body').insertAdjacentHTML('afterbegin',`
 <div class="sizes">
 Other sizes:
-<a id="3x3">3x3</a>
-<a id="4x4">4x4</a>
-<a id="5x5">5x5</a>
-<a id="6x6">6x6</a>
-<a id="7x7">7x7</a>
-<a id="8x8">8x8</a>
+<a id="3*3">3x3</a>
+<a id="4*4">4x4</a>
+<a id="5*5">5x5</a>
+<a id="6*6">6x6</a>
+<a id="7*7">7x7</a>
+<a id="8*8">8x8</a>
 </div>`);
 document.querySelector('body').insertAdjacentHTML('afterbegin',`<div class ='playground'></div>`);
 let playground = document.querySelector('.playground');
 
 
-( function (){
-    for(let i=0; i<9; i++){ 
+const getField = (size) =>{    
+    playground.innerHTML = '';
+    for(let i=0; i<size; i++){ 
         let div = document.createElement('div');
         if(i==0){
             div.innerHTML='';
@@ -41,19 +42,8 @@ let playground = document.querySelector('.playground');
     arr.forEach(el=>str+=el);
     playground.innerHTML = str;
 
-}());
-
-
-
-let sizes = document.querySelector('.sizes');
-sizes.addEventListener('click',(event)=>{
-    if(event.target.tagName=='A'){
-        sizes.querySelectorAll('a').forEach(el=>el.classList.remove('active'))
-        event.target.classList.add('active')
-    }
-})
-
-const  changePos = (el) =>{
+};
+const changePos = (el) =>{
     let arr = [];
     let str = '';
     for(let i=0; i<playground.children.length; i++){
@@ -65,7 +55,29 @@ const  changePos = (el) =>{
 
     arr.forEach(el=>str+=el);
     playground.innerHTML = str;
-}
+};
+const changeField = () =>{
+ 
+    let str = event.target.innerHTML;
+    let size = +(str[0])*(+str[2]);
+    playground.style = `   
+    display: grid;
+    grid-template-columns: repeat(` + str[0] + `, 1fr);
+    grid-template-rows: repeat(` + str[0] + `, 1fr);
+    background-color: rgb(241, 241, 177);`
+    getField(size);
+};
+
+let sizes = document.querySelector('.sizes');
+sizes.addEventListener('click',(event)=>{
+    if(event.target.tagName=='A'){
+        sizes.querySelectorAll('a').forEach(el=>el.classList.remove('active'));
+        event.target.classList.add('active');
+        changeField();
+    }
+});
+
+
 
 playground.addEventListener('click', (event)=>{
     let emptySquare = document.querySelector('.step');
@@ -89,3 +101,6 @@ playground.addEventListener('click', (event)=>{
 
 
 })
+
+let str = '3*3';
+console.log(str)

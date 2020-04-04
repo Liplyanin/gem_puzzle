@@ -8,19 +8,27 @@ body{
 }
 .playground{
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
     background-color: rgb(241, 241, 177);
 }
 .playground_item{
+    max-width: 100px;
+    max-height: 100px;
     width: 10vw;
     height: 10vw;
     display: flex;
     justify-content: center;
     align-items: center;
     border: solid 1px black;
-    font-size: 3em;
+    font-size: 1em;
     cursor: pointer;
+}
+@media (min-width: 760px){
+    .playground_item{
+        font-size: 3em;
+
+    }
 }
 .step{
     background-color: rgb(219, 219, 211);
