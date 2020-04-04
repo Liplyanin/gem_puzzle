@@ -2,6 +2,7 @@ document.querySelector('body').insertAdjacentHTML('afterbegin',`
 <div class="buttons">
         <button id="mix" onclick="getField(currentSize)">Mix and start</button>
         <button id="results">Results</button>
+        <button id="save" onclick="save()">Save</button>
     </div>
     <div class="game-status">
         <div class="steps">Steps: 0</div>
@@ -25,6 +26,7 @@ let steps = 0;
 let minutes = 0;
 let seconds = 0;
 let timer; 
+let playgroundStyle;
 const clock = () => {
     if(seconds==60){
         minutes++;
@@ -82,14 +84,16 @@ const changeField = () =>{
  
     let str = event.target.innerHTML;
     currentSize = +(str[0])*(+str[2]);
-    playground.style = `   
+    playgroundStyle = `   
     display: grid;
     grid-template-columns: repeat(` + str[0] + `, 1fr);
     grid-template-rows: repeat(` + str[0] + `, 1fr);
     background-color: rgb(241, 241, 177);`
+    playground.style = playgroundStyle;
     getField(currentSize);
 };
 const changePos = (el) =>{
+    
     let arr = [];
     let str = '';
     for(let i=0; i<playground.children.length; i++){
@@ -106,6 +110,7 @@ const changePos = (el) =>{
 };
 
 let sizes = document.querySelector('.sizes');
+
 sizes.addEventListener('click',(event)=>{
     if(event.target.tagName=='A'){
         sizes.querySelectorAll('a').forEach(el=>el.classList.remove('active'));
@@ -132,18 +137,31 @@ playground.addEventListener('click', (event)=>{
         }
     }
     
-   
 
+});
 
-})
-
-
-
-
-
-
-
+const save = () =>{
+    localStorage.setItem('gameField', playground.innerHTML);
+    localStorage.setItem('playgroundStyle', playgroundStyle );
+    localStorage.setItem('gameSeconds',  seconds);
+    localStorage.setItem('gameMinutes',  minutes);
+    localStorage.setItem('steps',  steps);
+    localStorage.setItem('currentSize',  currentSize);
+}
 window.onload = () =>{
+    if(localStorage.getItem('gameField')){
+        currentSize = localStorage.getItem('currentSize');
+        playground.innerHTML = localStorage.getItem('gameField');
+        playground.style  = localStorage.getItem('playgroundStyle');
+        minutes = localStorage.getItem('gameMinutes');
+        seconds = localStorage.getItem('gameSeconds');
+        steps = +(localStorage.getItem('steps'));
+        steps = +(localStorage.getItem('steps'));
+        clock();
+        document.querySelector('.steps').innerHTML = 'Steps: ' + steps;
+        
+    } else {
     getField(currentSize);
     document.getElementById('4*4').classList.add('active')
-}
+    }
+};
