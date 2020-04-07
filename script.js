@@ -21,12 +21,14 @@ Other sizes:
 document.querySelector('body').insertAdjacentHTML('afterbegin',`<div class ='playground'></div>`);
 let playground = document.querySelector('.playground');
 
+let expectedResult = '';
 let currentSize = 16;
 let steps = 0;
 let minutes = 0;
 let seconds = 0;
 let timer; 
 let playgroundStyle;
+let winnerClock;
 const clock = () => {
     if(seconds==60){
         minutes++;
@@ -35,7 +37,7 @@ const clock = () => {
     let resMinute=((minutes < 10) ? "0" : "") + minutes;
     let resSeconds =((seconds < 10) ? "0" : "") + seconds;
     let clock = 'Time: '+ resMinute + " : " + resSeconds;
-    
+    winnerClock = resMinute + ':' + resSeconds;
     document.querySelector('.time').innerHTML = clock;
     seconds++;    
     timer = setTimeout("clock()",1000); 
@@ -64,7 +66,7 @@ const getField = (size) =>{
     let arr = [];
     let str = '';
     for(let i=0; i<playground.children.length; i++){
-        arr.unshift(playground.children[i].outerHTML)
+        arr.push(playground.children[i].outerHTML)
     }
     for(let i = arr.length - 1; i > 0; i--){
         let j = Math.floor(Math.random()*(i + 1));
@@ -91,6 +93,11 @@ const changeField = () =>{
     background-color: rgb(241, 241, 177);`
     playground.style = playgroundStyle;
     getField(currentSize);
+    expectedResult='';
+    for(let i=1; i<currentSize; i++){
+        expectedResult+=i;
+    }
+    
 };
 const changePos = (el) =>{
     
@@ -121,6 +128,7 @@ sizes.addEventListener('click',(event)=>{
 
 playground.addEventListener('click', (event)=>{
     let emptySquare = document.querySelector('.step');
+    let result = '';
 
     if((emptySquare.offsetTop < event.clientY) && (event.clientY < (emptySquare.offsetTop + emptySquare.offsetHeight))){
         if((event.clientX > (emptySquare.offsetLeft - emptySquare.offsetWidth)) && (event.clientX < (emptySquare.offsetLeft + emptySquare.offsetWidth*2))){
@@ -136,8 +144,11 @@ playground.addEventListener('click', (event)=>{
             }
         }
     }
+    playground.querySelectorAll('.playground_item').forEach(el=>result+=el.innerHTML)
+    if(result==expectedResult){
+        alert('Ура! Вы решили головоломку за '+ winnerClock + ' и ' + steps + ' ходов»')
+    }
     
-
 });
 
 const save = () =>{
@@ -147,6 +158,7 @@ const save = () =>{
     localStorage.setItem('gameMinutes',  minutes);
     localStorage.setItem('steps',  steps);
     localStorage.setItem('currentSize',  currentSize);
+    localStorage.setItem('expectedResult',  expectedResult);
 }
 window.onload = () =>{
     if(localStorage.getItem('gameField')){
@@ -156,7 +168,7 @@ window.onload = () =>{
         minutes = localStorage.getItem('gameMinutes');
         seconds = localStorage.getItem('gameSeconds');
         steps = +(localStorage.getItem('steps'));
-        steps = +(localStorage.getItem('steps'));
+        expectedResult = (localStorage.getItem('expectedResult'));
         clock();
         document.querySelector('.steps').innerHTML = 'Steps: ' + steps;
         
