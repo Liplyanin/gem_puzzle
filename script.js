@@ -158,10 +158,11 @@ playground.addEventListener('click', (event)=>{
     playground.querySelectorAll('.playground_item').forEach(el=>result+=el.innerHTML)
     if (result==expectedResult){
         let li = document.createElement('li');
-        li.innerHTML ='Time: ' + winnerClock + ' Steps: ' + steps;
+        li.innerHTML ='Time: ' + winnerClock + ' and ' +'Steps: ' + steps +';';
         ul.append(li);
         localStorage.setItem('ul', ul.innerHTML);
         alert('Ура! Вы решили головоломку за '+ winnerClock + ' и ' + steps + ' ходов»');
+
     }
     
 });
