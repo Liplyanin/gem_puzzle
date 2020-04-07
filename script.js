@@ -4,6 +4,8 @@ document.querySelector('body').insertAdjacentHTML('afterbegin',`
         <button id="results">Results</button>
         <div class="popup">
         <div class="results">
+        <h3>Results:</h3>
+
         <ul>
             
         </ul>
