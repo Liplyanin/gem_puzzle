@@ -2,7 +2,15 @@ document.querySelector('body').insertAdjacentHTML('afterbegin',`
 <div class="buttons">
         <button id="mix" onclick="getField(currentSize)">Mix and start</button>
         <button id="results">Results</button>
-        <button id="save" onclick="save()">Save</button>
+        <div class="popup">
+        <div class="results">
+        <ul>
+            
+        </ul>
+        <button id = 'close-btn'>ok</button>
+    </div>
+    </div>
+        <button id="save">Save</button>
     </div>
     <div class="game-status">
         <div class="steps">Steps: 0</div>
@@ -19,8 +27,8 @@ Other sizes:
 <a>8x8</a>
 </div> `);
 document.querySelector('body').insertAdjacentHTML('afterbegin',`<div class ='playground'></div>`);
-let playground = document.querySelector('.playground');
 
+const playground = document.querySelector('.playground');
 let expectedResult = '';
 let currentSize = 16;
 let steps = 0;
@@ -29,6 +37,8 @@ let seconds = 0;
 let timer; 
 let playgroundStyle;
 let winnerClock;
+let ul = document.querySelector('ul');
+
 const clock = () => {
     if(seconds==60){
         minutes++;
@@ -79,7 +89,7 @@ const getField = (size) =>{
     playground.innerHTML = str;
     steps = 0;
     document.querySelector('.steps').innerHTML = 'Steps: ' + steps;
-    clock()
+    clock();
 };
 
 const changeField = () =>{
@@ -100,10 +110,10 @@ const changeField = () =>{
     
 };
 const changePos = (el) =>{
-    
     let arr = [];
     let str = '';
-    for(let i=0; i<playground.children.length; i++){
+
+    for (let i=0; i<playground.children.length; i++){
         arr.push(playground.children[i].outerHTML)
     }
     let indexEmty = arr.indexOf(el.outerHTML);
@@ -119,37 +129,52 @@ const changePos = (el) =>{
 let sizes = document.querySelector('.sizes');
 
 sizes.addEventListener('click',(event)=>{
-    if(event.target.tagName=='A'){
+    if (event.target.tagName=='A'){
         sizes.querySelectorAll('a').forEach(el=>el.classList.remove('active'));
         event.target.classList.add('active');
         changeField();
     }
 });
 
+
 playground.addEventListener('click', (event)=>{
     let emptySquare = document.querySelector('.step');
     let result = '';
 
-    if((emptySquare.offsetTop < event.clientY) && (event.clientY < (emptySquare.offsetTop + emptySquare.offsetHeight))){
-        if((event.clientX > (emptySquare.offsetLeft - emptySquare.offsetWidth)) && (event.clientX < (emptySquare.offsetLeft + emptySquare.offsetWidth*2))){
-           if(event.target.className=='playground_item'){
+    if ((emptySquare.offsetTop < event.clientY) && (event.clientY < (emptySquare.offsetTop + emptySquare.offsetHeight))){
+        if ((event.clientX > (emptySquare.offsetLeft - emptySquare.offsetWidth)) && (event.clientX < (emptySquare.offsetLeft + emptySquare.offsetWidth*2))){
+           if (event.target.className=='playground_item'){
             changePos(emptySquare);
             }
         }
-    }else if( (event.clientY > emptySquare.offsetTop -  emptySquare.offsetHeight) && (event.clientY < emptySquare.offsetTop +  emptySquare.offsetHeight * 2)){
-        if((event.clientX > emptySquare.offsetLeft) && (event.clientX < emptySquare.offsetLeft + emptySquare.offsetWidth)){
-            if(event.target.className=='playground_item'){
+    }else if ( (event.clientY > emptySquare.offsetTop -  emptySquare.offsetHeight) && (event.clientY < emptySquare.offsetTop +  emptySquare.offsetHeight * 2)){
+        if ((event.clientX > emptySquare.offsetLeft) && (event.clientX < emptySquare.offsetLeft + emptySquare.offsetWidth)){
+            if (event.target.className=='playground_item'){
                 changePos(emptySquare);
               
             }
         }
     }
     playground.querySelectorAll('.playground_item').forEach(el=>result+=el.innerHTML)
-    if(result==expectedResult){
-        alert('Ура! Вы решили головоломку за '+ winnerClock + ' и ' + steps + ' ходов»')
+    if (result==expectedResult){
+        let li = document.createElement('li');
+        li.innerHTML ='Time: ' + winnerClock + ' Steps: ' + steps;
+        ul.append(li);
+        localStorage.setItem('ul', ul.innerHTML);
+        alert('Ура! Вы решили головоломку за '+ winnerClock + ' и ' + steps + ' ходов»');
     }
     
 });
+
+document.getElementById('results').addEventListener('click', () =>{
+    document.querySelector('.results').style = 'display: flex;'
+    document.querySelector('.popup').classList.add('popup_active');
+});
+document.getElementById('close-btn').addEventListener('click', ()=>{
+    document.querySelector('.results').style = 'display: none;';
+    document.querySelector('.popup').classList.remove('popup_active');
+
+})
 
 const save = () =>{
     localStorage.setItem('gameField', playground.innerHTML);
@@ -160,10 +185,13 @@ const save = () =>{
     localStorage.setItem('currentSize',  currentSize);
     localStorage.setItem('expectedResult',  expectedResult);
 }
+document.getElementById('save').addEventListener('click', save);
+
 window.onload = () =>{
     if(localStorage.getItem('gameField')){
         currentSize = localStorage.getItem('currentSize');
         playground.innerHTML = localStorage.getItem('gameField');
+        ul.innerHTML = localStorage.getItem('ul');
         playground.style  = localStorage.getItem('playgroundStyle');
         minutes = localStorage.getItem('gameMinutes');
         seconds = localStorage.getItem('gameSeconds');
@@ -174,6 +202,6 @@ window.onload = () =>{
         
     } else {
     getField(currentSize);
-    document.getElementById('4*4').classList.add('active')
+    document.getElementById('4*4').classList.add('active');
     }
 };

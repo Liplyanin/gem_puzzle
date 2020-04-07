@@ -60,3 +60,41 @@ body{
 .active{
     color: red;
 }
+
+.popup {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    background: #0008;
+    display: none;
+}
+.popup_active {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  
+}
+.popup button {
+    width: 100px;
+    border-radius: 5px;
+    height: 30px;
+    margin-left: 7px;
+    border: none;
+}
+.results{
+    display: none;
+    border: 2px solid black;
+    text-align: center;
+    max-width: 500px;
+    overflow: hidden;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #b7b7b7;
+    min-width: 320px;
+    min-height: 320px;
+    width: 30vw;
+    height: 20vw;
+}
